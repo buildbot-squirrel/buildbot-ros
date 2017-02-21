@@ -64,7 +64,6 @@ def run_build_and_test(workspace, rosdistro):
     #  (https://github.com/nose-devs/nose/issues/779)
     test_dir = os.path.realpath('../test')
     call(['cmake', '../src', '-DCATKIN_TEST_RESULTS_DIR='+test_dir], ros_env)
-    
     print('make')
     call(['make'], ros_env)
     print('make tests')
@@ -266,7 +265,11 @@ class RosDepResolver:
         if ros_entry not in self.r2a:
             print('Could not find %s in keys.' % ros_entry)
             # horrible hack, that assumes missing deps are actually unlisted, private catkin packages
-            return ['ros-'+self.env['ROS_DISTRO']+'-'+ros_entry.replace('_','-'),]
+            if ros_entry == 'v4r':
+                print('Installing v4r')
+                return ['v4r',]
+            else:
+                return ['ros-'+self.env['ROS_DISTRO']+'-'+ros_entry.replace('_','-'),]
         return self.r2a[ros_entry]
 
     def to_aptlist(self, ros_entries):
