@@ -72,10 +72,11 @@ class GitPRPoller(base.PollingChangeSource, StateMixin):
         self.changeCount = 0
         self.lastRev = {}
         self.lastRevs = {}
+        #self.r_owner=None
 
         self.pull_requests = []
 
-        self.auth_header = {'Authorization': 'token ' + token}
+        self.auth_header = {'Authorization': 'token ...'}# + token}
 
         if fetch_refspec is not None:
             config.error("GitPoller: fetch_refspec is no longer supported. "
@@ -138,6 +139,7 @@ class GitPRPoller(base.PollingChangeSource, StateMixin):
                         'repo_url':  pr['head']['repo']['ssh_url'],
                         'timestamp': pr['updated_at']}
             pr_info.append(infodict)
+            #self.r_owner = infodict['owner']
             log.msg("got info for rev %s at %s/%s/%s" % (infodict['rev'],
                                                          infodict['owner'],
                                                          infodict['repo_name'],
@@ -161,6 +163,8 @@ class GitPRPoller(base.PollingChangeSource, StateMixin):
                 revkey = (pull_request['owner'] + "/" + pull_request['repo_name']
                          + "/" + pull_request['branch'])
                 revs.update({revkey: pull_request['rev']})
+                #self.r_owner = pull_request['owner']
+                #print 'new pull request found'
             except Exception:
                 log.err(_why="trying to poll branch %s of %s"
                         % (pull_request['branch'], pull_request['repo_url']) )

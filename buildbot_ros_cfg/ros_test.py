@@ -2,7 +2,7 @@ from buildbot.config import BuilderConfig
 from buildbot.changes import base
 from buildbot.changes.filter import ChangeFilter
 from buildbot.changes.gitpoller import GitPoller
-from buildbot.plugins import util, status
+from buildbot.plugins import util ,status
 from buildbot.process.factory import BuildFactory
 from buildbot.process.properties import Interpolate
 from buildbot.schedulers import basic
@@ -43,6 +43,7 @@ class NamedGitPoller(GitPoller):
         self.changeCount = 0
         self.lastRev = {}
         self.workdir = name+'_gitpoller-work'
+        #self.r_owner = None
 
 ## @brief Testbuild jobs are used for CI testing of the source repo.
 ## @param c The Buildmasterconfig
@@ -67,6 +68,7 @@ def ros_testbuild(c, job_name, url, branch, distro, arch, rosdistro, machines,
             GitPRPoller(name=rosdistro+"_pr_poller",
                         repourl=url, # this may pose some problems
                         project=project_name,
+						#branch=branch,
                         token=token,
                         pollInterval=15))
         # parse repo_url git@github:author/repo.git to repoOwner, repoName
@@ -85,12 +87,22 @@ def ros_testbuild(c, job_name, url, branch, distro, arch, rosdistro, machines,
             )
         )
 
+    #print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Project_name: %s' % project_name)
+
+    #if 'common' in project_name:
+    #    maintainer='nadia.hammoudehgarcia@ipa.fraunhofer.de'
+    #    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Project_name common: %s' % project_name)
+    #else:
+    #    maintainer='nadiahg@gmail.com'
+    #    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Project_name not common: %s' % project_name)
+
     c['schedulers'].append(
         basic.SingleBranchScheduler(
             name=project_name,
             builderNames=[project_name,],
-            change_filter=ChangeFilter(project=project_name)
-        )
+            change_filter=ChangeFilter(project=project_name) #,
+            #properties={ 'owner': ['nhg@ipa.fhg.de'] }
+       )
     )
 
     # Directory which will be bind-mounted

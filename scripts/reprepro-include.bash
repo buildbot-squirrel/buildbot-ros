@@ -25,3 +25,6 @@ reprepro -V -b $REPO_DIR removefilter $DISTRO "Package (==$PKG), Architecture (=
 reprepro -V -b $REPO_DIR deleteunreferenced
 
 reprepro -V -b $REPO_DIR includedeb $DISTRO $BUILD_DIR/binarydebs/$NAME
+
+echo "SignWith: 5F4FEFE2" >> distributions
+echo "SignWith: EF26E4E9" >> distributions
